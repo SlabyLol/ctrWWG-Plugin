@@ -3,8 +3,6 @@ name: Build & Release
 on:
   push:
     branches: [ master ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -24,7 +22,8 @@ jobs:
         run: |
           VERSION=$(cat version.txt | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Detected version: $VERSION"
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION (tag v$VERSION)"
 
       - name: Build Plugin
         run: make
@@ -42,7 +41,8 @@ jobs:
 
   release:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Run on master push and manual dispatch (not on PRs)
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,20 +50,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Read version
         id: ver
         run: |
           VERSION=$(cat version.txt | tr -d '[:space:]')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: ctrWWG-Plugin-v${{ steps.ver.outputs.version }}
           path: dist
+
+      - name: Ensure tag exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists locally"
+          else
+            echo "Creating tag $TAG"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG" || echo "Tag push failed or already exists on remote"
+          fi
 
       - name: Check if release already exists
         id: check
@@ -116,13 +132,16 @@ jobs:
           gh release create "$TAG" \
             --repo "${{ github.repository }}" \
             --title "ctrWWG-Plugin v${VERSION}" \
-            --notes-file /tmp/release-notes.md
+            --notes-file /tmp/release-notes.md \
+            --target master
 
-      - name: Upload assets to existing or new release
+      - name: Upload assets (always)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ steps.ver.outputs.tag }}"
+          # Wait a moment if release was just created
+          sleep 2
           gh release upload "$TAG" dist/*.3gx dist/*.elf \
             --repo "${{ github.repository }}" \
             --clobber

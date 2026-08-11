@@ -66,66 +66,38 @@ exit:
     {
         MenuFolder *cheats = new MenuFolder("Cheats");
 
-        // Hotkey optional – user can set in menu
-        *cheats += new MenuEntry("99999 Coins", nullptr, Coins99999,
-            "Writes 99999 to known coin addresses.\n"
-            "If nothing changes: use Tools -> Search\n"
-            "to find YOUR coin address.");
+        // GameFunc (2nd arg) = runs every frame when activated
+        *cheats += new MenuEntry("Coins FREEZE 99999", Coins99999,
+            "Confirmed address 0x0091E39C\n"
+            "Keeps coins at 99999 every frame.");
 
-        // Infinite lives = toggle entry (IsActivated runs every frame)
-        *cheats += new MenuEntry("Infinite Lives", InfiniteLives, "",
-            "Keeps writing the lives address every frame.\n"
-            "Only works if the address matches your version.\n"
-            "Find the correct address with Searcher.");
+        *cheats += new MenuEntry("Coins set once 99999", nullptr, CoinsSetOnce,
+            "Writes 99999 once to 0x0091E39C");
 
-        *cheats += new MenuEntry("Refill Lives", nullptr, RefillLives,
-            "One-shot lives write.");
+        *cheats += new MenuEntry("Infinite Lives", InfiniteLives,
+            "Writes lives address every frame.\n"
+            "Find real address with Search if needed.");
 
-        *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99,
-            "Attempts Kard points write / patch.\n"
-            "Often needs a version-specific address.");
+        *cheats += new MenuEntry("Refill Lives", nullptr, RefillLives);
+
+        *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99);
 
         menu += cheats;
 
         MenuFolder *gameplay = new MenuFolder("Gameplay");
-
-        *gameplay += new MenuEntry("Force Win (how-to)", nullptr, ForceWin,
-            "No stable public address.\n"
-            "Use Memory Searcher during a microgame.");
-
-        *gameplay += new MenuEntry("Defeat Boss (how-to)", nullptr, DefeatBoss,
-            "No stable public address.\n"
-            "Use Memory Searcher during a boss.");
-
+        *gameplay += new MenuEntry("Force Win (how-to)", nullptr, ForceWin);
+        *gameplay += new MenuEntry("Defeat Boss (how-to)", nullptr, DefeatBoss);
         menu += gameplay;
 
         MenuFolder *unlock = new MenuFolder("Unlock");
-
-        *unlock += new MenuEntry("Why cheats fail / How to fix", nullptr, UnlockInfo,
-            "Explains version mismatch and how to\n"
-            "find working addresses yourself.");
-
+        *unlock += new MenuEntry("Info", nullptr, UnlockInfo);
         menu += unlock;
-
-        menu += new MenuEntry("About", nullptr, [](MenuEntry *entry)
-        {
-            MessageBox("ctrWWG-Plugin", 
-                "WarioWare Gold 3GX Plugin\n\n"
-                "Built-in addresses are from 2018\n"
-                "community codes and often do NOT\n"
-                "work on every game revision.\n\n"
-                "Use Tools -> Search to find\n"
-                "Coins / Lives on YOUR dump,\n"
-                "then save them as AR codes.\n\n"
-                "Title ID: 00040000001D1C00")();
-        });
     }
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 0,
-            "WarioWare Gold\n"
-            "Find addresses with Search if cheats fail");
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 1,
+            "WarioWare Gold\nCoins @ 0x0091E39C confirmed");
 
         menu->SynchronizeWithFrame(true);
         InitMenu(*menu);

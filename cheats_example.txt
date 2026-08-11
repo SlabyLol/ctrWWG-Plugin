@@ -1,31 +1,14 @@
-# ctrWWG-Plugin – Example AR codes for WarioWare Gold
+# WarioWare Gold – confirmed working coin address
 # Title ID: 00040000001D1C00
-# Place as: sd:/luma/plugins/00040000001D1C00.txt
-# or import via Action Replay inside the plugin
 
 [99999 Coins]
 0091E39C 0001869F
 
-[99 Wario Kard Points]
-00465440 E3A00063
+# 0001869F = 99999 decimal
+# Address found via CTRPF Search (matches 2018 community code)
 
-[Infinite Lives ON]
+[Infinite Lives ON - may need your address]
 2072A0A4 00000000
 
-[Infinite Lives OFF]
-2072A0A4 00000001
-
-# -------------------------------------------------
-# Unlock All / Defeat Boss
-# The full unlock codes (all minigames, characters,
-# challenges, Arcade collections, Missions, medals,
-# Wario Ward items/cards, all 126 Kard cards) were
-# only released as a binary NTR .plg by dsrules in 2018.
-# They are not publicly available as simple AR codes.
-#
-# For Force Win / Defeat Boss:
-# Use the Memory Searcher while a microgame/boss is
-# running and look for a changing win/lose flag
-# (usually 0 = playing, 1 = win, 2 = lose etc.).
-# Then create your own AR code with the found address.
-# -------------------------------------------------
+[99 Kard Points - may need your address]
+00465440 E3A00063

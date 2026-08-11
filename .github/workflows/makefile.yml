@@ -1,10 +1,7 @@
-name: Build ctrWWG-Plugin
+name: Build (legacy)
 
+# Kept for compatibility – main workflow is build.yml
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -14,20 +11,11 @@ jobs:
       image: pablomk7/libctrpf:0.8.0
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Build Plugin
-      run: make
-
-    - name: Upload 3GX
-      uses: actions/upload-artifact@v4
-      with:
-        name: ctrWWG-Plugin
-        path: |
-          ctrWWG-Plugin.3gx
-          ctrWWG-Plugin.elf
-
-    - name: Upload on success
-      if: success()
-      run: echo "Build successful - download the Artifact"
+      - uses: actions/checkout@v4
+      - run: make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ctrWWG-Plugin
+          path: |
+            *.3gx
+            *.elf

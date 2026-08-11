@@ -1,0 +1,123 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: pablomk7/libctrpf:0.8.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: ver
+        run: |
+          VERSION=$(cat version.txt | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+
+      - name: Build Plugin
+        run: make
+
+      - name: List build output
+        run: ls -la *.3gx *.elf 2>/dev/null || ls -la
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctrWWG-Plugin-v${{ steps.ver.outputs.version }}
+          path: |
+            *.3gx
+            *.elf
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: ver
+        run: |
+          VERSION=$(cat version.txt | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ctrWWG-Plugin-v${{ steps.ver.outputs.version }}
+          path: dist
+
+      - name: Check if release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          if gh release view "$TAG" --repo "${{ github.repository }}" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release $TAG already exists → only upload assets"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release $TAG does not exist → will create"
+          fi
+
+      - name: Create release (only if missing)
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          VERSION="${{ steps.ver.outputs.version }}"
+          gh release create "$TAG" \
+            --repo "${{ github.repository }}" \
+            --title "ctrWWG-Plugin v${VERSION}" \
+            --notes "## ctrWWG-Plugin v${VERSION}
+
+CTRPluginFramework 3GX Plugin for **WarioWare Gold** (3DS)
+
+### Features
+- 99999 Coins
+- Infinite Lives (Toggle) + Refill Lives
+- 99 Wario Kard Points
+- Force Win (Microgame)
+- Defeat Boss (best-effort)
+- Unlock All – Info
+- Full Action Replay + Memory Searcher
+
+### Installation
+1. Download \\`ctrWWG-Plugin.3gx\\` (or matching .3gx)
+2. Place in: \\`sd:/luma/plugins/00040000001D1C00/\\`
+3. Enable Plugin Loader in Rosalina
+4. Press **Select** in-game
+
+Version from \\`version.txt\\`: **${VERSION}**"
+
+      - name: Upload assets to existing or new release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          # Upload / overwrite assets (works for both new and existing releases)
+          gh release upload "$TAG" dist/*.3gx dist/*.elf \
+            --repo "${{ github.repository }}" \
+            --clobber
+
+          echo "Assets uploaded to release $TAG"

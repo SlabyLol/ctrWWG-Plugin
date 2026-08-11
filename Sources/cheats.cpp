@@ -2,15 +2,13 @@
 
 namespace CTRPluginFramework
 {
-    // Confirmed by user search: Coins @ 0x0091E39C
+    // ONLY confirmed address from user Search:
+    // Coins @ 0x0091E39C
 
     void    Coins99999(MenuEntry *entry)
     {
-        // Freeze coins every frame while enabled
         if (entry->IsActivated())
-        {
             Process::Write32(0x0091E39C, 99999);
-        }
 
         if (entry->WasJustActivated())
             OSD::Notify("Coins FREEZE 99999 ON", Color::Lime);
@@ -27,57 +25,47 @@ namespace CTRPluginFramework
         }
     }
 
+    // Lives: NO write until user finds real address via Search
     void    InfiniteLives(MenuEntry *entry)
     {
-        static const u32 lifeAddr = 0x2072A0A4;
-
-        if (entry->IsActivated())
-            Process::Write32(lifeAddr, 0);
-
         if (entry->WasJustActivated())
-            OSD::Notify("Infinite Lives ON (try Search if no effect)", Color::Lime);
+            OSD::Notify("Find Lives address with Search first!", Color::Orange);
     }
 
     void    RefillLives(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-        {
-            Process::Write32(0x2072A0A4, 0);
-            OSD::Notify("Lives write sent – verify with Searcher", Color::Lime);
-        }
+            OSD::Notify("Find Lives address with Search first!", Color::Orange);
     }
 
     void    KardPoints99(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-        {
-            Process::Write32(0x00465440, 0xE3A00063);
-            OSD::Notify("Kard patch sent – use Searcher if needed", Color::Lime);
-        }
+            OSD::Notify("Find Kard address with Search first!", Color::Orange);
     }
 
     void    ForceWin(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-            OSD::Notify("Use Searcher during microgame", Color::Orange);
+            OSD::Notify("Find win-flag with Search during microgame", Color::Orange);
     }
 
     void    DefeatBoss(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-            OSD::Notify("Use Searcher during boss", Color::Orange);
+            OSD::Notify("Find win-flag with Search during boss", Color::Orange);
     }
 
     void    UnlockInfo(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
         {
-            MessageBox("Coins address confirmed", 
-                "Coins: 0x0091E39C (your search)\n\n"
-                "Enable 'Coins FREEZE 99999' to\n"
-                "keep coins locked every frame.\n\n"
-                "For Lives: same Search method.\n"
-                "Unlock All = old NTR plugin only.")();
+            MessageBox("Safe mode", 
+                "Only Coins (0x0091E39C) writes memory.\n\n"
+                "Lives / Kard / Force Win / Boss\n"
+                "are disabled until YOU find the\n"
+                "addresses with Search.\n\n"
+                "Wrong addresses = crash.")();
         }
     }
 }

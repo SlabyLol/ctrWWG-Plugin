@@ -25,7 +25,6 @@ namespace CTRPluginFramework
             0xE1D400D4, 0xE3510003, 0x159F0034, 0x1A000003
         };
 
-        Result  res;
         Handle  processHandle;
         s64     textTotalSize = 0;
         s64     startAddress = 0;
@@ -36,7 +35,7 @@ namespace CTRPluginFramework
 
         svcGetProcessInfo(&textTotalSize, processHandle, 0x10002);
         svcGetProcessInfo(&startAddress, processHandle, 0x10005);
-        if(R_FAILED(svcMapProcessMemoryEx(CUR_PROCESS_HANDLE, 0x14000000, processHandle, (u32)startAddress, textTotalSize)))
+        if (R_FAILED(svcMapProcessMemoryEx(CUR_PROCESS_HANDLE, 0x14000000, processHandle, (u32)startAddress, textTotalSize)))
             goto exit;
 
         found = (u32 *)Utils::Search<u32>(0x14000000, (u32)textTotalSize, pattern);
@@ -65,78 +64,68 @@ exit:
 
     void    InitMenu(PluginMenu &menu)
     {
-        // === Cheats folder ===
         MenuFolder *cheats = new MenuFolder("Cheats");
 
+        // Hotkey optional – user can set in menu
         *cheats += new MenuEntry("99999 Coins", nullptr, Coins99999,
-            "Sets coin count to 99999.");
+            "Writes 99999 to known coin addresses.\n"
+            "If nothing changes: use Tools -> Search\n"
+            "to find YOUR coin address.");
 
-        *cheats += new MenuEntry("Infinite Lives (Toggle)", nullptr, InfiniteLives,
-            "Toggle infinite lives.\nPress again to turn OFF.");
+        // Infinite lives = toggle entry (IsActivated runs every frame)
+        *cheats += new MenuEntry("Infinite Lives", InfiniteLives, "",
+            "Keeps writing the lives address every frame.\n"
+            "Only works if the address matches your version.\n"
+            "Find the correct address with Searcher.");
 
         *cheats += new MenuEntry("Refill Lives", nullptr, RefillLives,
-            "Refill / protect lives (Story Mode).\n"
-            "Best used together with Infinite Lives.");
+            "One-shot lives write.");
 
         *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99,
-            "Sets Wario Kard points to 99.");
+            "Attempts Kard points write / patch.\n"
+            "Often needs a version-specific address.");
 
         menu += cheats;
 
-        // === Gameplay folder ===
         MenuFolder *gameplay = new MenuFolder("Gameplay");
 
-        *gameplay += new MenuEntry("Force Win (Microgame)", nullptr, ForceWin,
-            "Attempt to force-clear the current\n"
-            "microgame. Use during play.\n"
-            "If nothing happens, search for the\n"
-            "win flag with the Memory Searcher.");
+        *gameplay += new MenuEntry("Force Win (how-to)", nullptr, ForceWin,
+            "No stable public address.\n"
+            "Use Memory Searcher during a microgame.");
 
-        *gameplay += new MenuEntry("Defeat Boss", nullptr, DefeatBoss,
-            "Best-effort boss clear.\n"
-            "Activate while a Boss Microgame\n"
-            "is running. Combine with Force Win.\n"
-            "Exact address is version-dependent.");
+        *gameplay += new MenuEntry("Defeat Boss (how-to)", nullptr, DefeatBoss,
+            "No stable public address.\n"
+            "Use Memory Searcher during a boss.");
 
         menu += gameplay;
 
-        // === Unlock folder ===
         MenuFolder *unlock = new MenuFolder("Unlock");
 
-        *unlock += new MenuEntry("Unlock All – Info", nullptr, UnlockInfo,
-            "Explains how to unlock everything\n"
-            "(minigames, characters, challenges,\n"
-            "Arcade, Missions, cards…).\n"
-            "Full codes were in the old NTR plugin.");
+        *unlock += new MenuEntry("Why cheats fail / How to fix", nullptr, UnlockInfo,
+            "Explains version mismatch and how to\n"
+            "find working addresses yourself.");
 
         menu += unlock;
 
-        // About
         menu += new MenuEntry("About", nullptr, [](MenuEntry *entry)
         {
-            MessageBox("ctrWWG-Plugin v1.1", 
-                "WarioWare Gold 3GX Plugin\n"
-                "by DarkFox / SlabyLol\n\n"
-                "Title ID: 00040000001D1C00\n\n"
-                "Working:\n"
-                "• 99999 Coins\n"
-                "• Infinite / Refill Lives\n"
-                "• 99 Kard Points\n\n"
-                "Force Win / Defeat Boss =\n"
-                "best-effort (use Searcher if needed)\n\n"
-                "Full Unlock All = use old NTR plugin\n"
-                "or Memory Searcher + AR.\n\n"
-                "Credits: Nanquitas, PabloMK7,\n"
-                "dsrules (original NTR cheats)")();
+            MessageBox("ctrWWG-Plugin", 
+                "WarioWare Gold 3GX Plugin\n\n"
+                "Built-in addresses are from 2018\n"
+                "community codes and often do NOT\n"
+                "work on every game revision.\n\n"
+                "Use Tools -> Search to find\n"
+                "Coins / Lives on YOUR dump,\n"
+                "then save them as AR codes.\n\n"
+                "Title ID: 00040000001D1C00")();
         });
     }
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 1, 0,
-            "WarioWare Gold Plugin\n"
-            "Coins • Lives • Kard • Force Win\n"
-            "+ Action Replay & tools");
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 0,
+            "WarioWare Gold\n"
+            "Find addresses with Search if cheats fail");
 
         menu->SynchronizeWithFrame(true);
         InitMenu(*menu);

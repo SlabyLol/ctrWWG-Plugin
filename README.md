@@ -1,55 +1,54 @@
 # ctrWWG-Plugin
 
-**CTRPluginFramework 3GX Plugin for WarioWare Gold** (Nintendo 3DS)
-
+CTRPluginFramework 3GX Plugin for **WarioWare Gold** (3DS)  
 Title ID: `00040000001D1C00`
 
-## Features
+## Important: Cheats may not work out of the box
 
-### Working Cheats
-- **99999 Coins**
-- **Infinite Lives** (toggle)
-- **Refill Lives**
-- **99 Wario Kard Points**
+Public Action Replay addresses from 2018 are **version/region specific**.  
+If Coins / Lives / Kard Points do nothing on your game, the addresses are wrong for your dump.
 
-### Gameplay
-- **Force Win** – attempt to auto-clear the current microgame
-- **Defeat Boss** – best-effort boss clear (activate during boss)
+### How to make working cheats (Memory Searcher)
 
-### Unlock
-- Info entry explaining how to get full unlocks (all minigames, characters, challenges, Arcade, Missions, cards…)
+1. Start the game and open the plugin (**Select**)
+2. Go to **Tools → Search**
+3. Example for Coins:
+   - Note your current coin count
+   - Search exact value
+   - Spend or earn coins in-game
+   - Search again (Increased / Decreased / Changed)
+   - Repeat until 1–2 addresses remain
+   - Edit the value to `99999`
+4. Save the address as an **Action Replay** code inside the plugin
 
-The complete “Unlock Everything” codes only existed in the old 2018 NTR `.plg` by dsrules and were never published as simple AR addresses. Use the built-in **Memory Searcher** or the original NTR plugin if you need 100 % unlock.
+Same method for Lives and Wario Kard Points.
 
-## Installation
+### Built-in menu
 
-1. Download `ctrWWG.3gx` from [Actions → Artifacts](https://github.com/SlabyLol/ctrWWG-Plugin/actions)
-2. Put it here:
-   ```
-   sd:/luma/plugins/00040000001D1C00/ctrWWG.3gx
-   ```
-3. Optional AR file:
-   ```
-   sd:/luma/plugins/00040000001D1C00.txt
-   ```
-4. Rosalina → Plugin Loader → Enable
-5. Start game → press **Select**
+- 99999 Coins (tries known addresses)
+- Infinite Lives (toggle – only if address matches)
+- Refill Lives
+- 99 Wario Kard Points
+- Force Win / Defeat Boss → guide only (no stable public address)
+- Unlock All → only existed in the old 2018 NTR `.plg` by dsrules
 
-## Building
+### Installation
+
+```
+sd:/luma/plugins/00040000001D1C00/ctrWWG-Plugin.3gx
+```
+
+Enable Plugin Loader in Rosalina (L + Down + Select).
+
+### Build / Release
+
+Version is in `version.txt`. Every push to `master` builds and auto-releases.
 
 ```bash
 make
 ```
 
-Requires devkitPro + libctrpf + 3gxtool.
+### Credits
 
-## Credits
-
-- CTRPluginFramework – Nanquitas / PabloMK7 / ThePixellizerOSS
+- CTRPluginFramework – Nanquitas / PabloMK7
 - Original NTR cheats – dsrules (GBAtemp)
-- Template – PabloMK7 BlankTemplate
-
-## Notes
-
-Addresses can differ between game versions/regions.  
-If a cheat does nothing, open the **Memory Searcher** inside the plugin and find the correct value yourself.

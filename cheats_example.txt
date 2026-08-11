@@ -1,0 +1,19 @@
+# Example CTRPF Action Replay codes for WarioWare Gold
+# Place as sd:/luma/plugins/00040000001D1C00.txt
+# or import via the plugin's Action Replay menu
+
+[99999 Coins]
+0091E39C 0001869F
+
+[99 Wario Kard Points]
+00465440 E3A00063
+
+[Infinite Lives ON]
+2072A0A4 00000000
+
+[Infinite Lives OFF]
+2072A0A4 00000001
+
+# Note: These addresses come from community codes (2018 era).
+# They may need adjustment for different game revisions.
+# Use the Memory Searcher inside the plugin if they don't work.

@@ -3,6 +3,7 @@
 #include <CTRPluginFramework.hpp>
 
 #include <vector>
+#include "cheats.hpp"
 
 namespace CTRPluginFramework
 {
@@ -54,14 +55,12 @@ exit:
     }
 
     // This function is called before main and before the game starts
-    // Useful to do code edits safely
     void    PatchProcess(FwkSettings &settings)
     {
         ToggleTouchscreenForceOn();
     }
 
     // This function is called when the process exits
-    // Useful to save settings, undo patchs or clean up things
     void    OnProcessExit(void)
     {
         ToggleTouchscreenForceOn();
@@ -69,26 +68,45 @@ exit:
 
     void    InitMenu(PluginMenu &menu)
     {
-        // Create your entries here, or elsewhere
-        // You can create your entries whenever/wherever you feel like it
-        
-        // Example entry
-        /*menu += new MenuEntry("Test", nullptr, [](MenuEntry *entry)
+        MenuFolder *cheats = new MenuFolder("Cheats");
+
+        *cheats += new MenuEntry("99999 Coins", nullptr, Coins99999,
+            "Sets your coin count to 99999.\n"
+            "Address may vary by version/region.");
+
+        *cheats += new MenuEntry("Infinite Lives (Toggle)", nullptr, InfiniteLives,
+            "Toggle infinite lives for Story Mode.\n"
+            "Press again to turn OFF.");
+
+        *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99,
+            "Sets Wario Kard points to 99.");
+
+        menu += cheats;
+
+        // Info entry
+        menu += new MenuEntry("About / Notes", nullptr, [](MenuEntry *entry)
         {
-            std::string body("What's the answer ?\n");
-
-            body += std::to_string(42);
-
-            MessageBox("UA", body)();
-        });*/
+            MessageBox("ctrWWG-Plugin", 
+                "WarioWare Gold 3GX Plugin\n"
+                "by DarkFox / SlabyLol\n\n"
+                "Title ID: 00040000001D1C00\n\n"
+                "If a cheat does not work, use the\n"
+                "built-in Memory Searcher or\n"
+                "Action Replay to find the correct\n"
+                "addresses for your version.\n\n"
+                "Original NTR codes by dsrules.\n"
+                "Framework by Nanquitas / PabloMK7.")();
+        });
     }
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("Action Replay", 0, 8, 0,
-                                            "A blank template plugin.\nGives you access to the ActionReplay and others tools.");
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 0, 0,
+            "WarioWare Gold Plugin\n"
+            "Coins | Lives | Kard Points\n"
+            "+ full Action Replay & tools");
 
-        // Synnchronize the menu with frame event
+        // Synchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
 
         // Init our menu entries & folders

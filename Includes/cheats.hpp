@@ -9,5 +9,9 @@ namespace CTRPluginFramework
 {
     using StringVector = std::vector<std::string>;
 
+    // Cheats
+    void    Coins99999(MenuEntry *entry);
+    void    InfiniteLives(MenuEntry *entry);
+    void    KardPoints99(MenuEntry *entry);
 }
 #endif

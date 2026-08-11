@@ -1,28 +1,28 @@
-Author: DarkFox
+Author: DarkFox / SlabyLol
 
 Version: # Plugin version
-    Major: 0
+    Major: 1
     Minor: 0
-    Revision: 1
+    Revision: 0
 
 Targets: # Low TitleId of games which are compatibles with this plugin (0 for all)
+    - 0x001D1C00
 
-Title: WWG Plugin
+Title: ctrWWG-Plugin
 
-Summary: A WWG Plugin
+Summary: WarioWare Gold 3GX Plugin
 
 Description: |
-  WarioWareGold Plugin
+  CTRPluginFramework plugin for WarioWare Gold (3DS).
 
   Features:
     - Memory searcher
     - Hex Editor
-    - Code creator
-    - Code import from file
-    - Action Replay engine with extra capabilities
-    - Super fast screenshot engine
+    - Action Replay engine
+    - Built-in cheats (Coins, Lives, Kard Points)
+    - Fast screenshots
 
-Compatibility: Any
+Compatibility: WarioWare Gold (EUR / common Title ID)
 
 MemorySize: 5MiB
 

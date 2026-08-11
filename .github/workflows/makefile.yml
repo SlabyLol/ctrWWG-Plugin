@@ -1,33 +1,33 @@
-name: Makefile CI
+name: Build ctrWWG-Plugin
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
     container:
       image: pablomk7/libctrpf:0.8.0
 
     steps:
-    - uses: actions/checkout@v2
-      
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Build Plugin
       run: make
-      
-    - name: Upload Plugin
+
+    - name: Upload 3GX
       uses: actions/upload-artifact@v4
       with:
-        name: Plugin 3GX File
-        path: ctrWWG.3gx
-    
-    - name: Upload Plugin ELF
-      uses: actions/upload-artifact@v4
-      with:
-        name: Plugin ELF File
-        path: ctrWWG.elf
+        name: ctrWWG-Plugin
+        path: |
+          ctrWWG.3gx
+          ctrWWG.elf
+
+    - name: Upload on success
+      if: success()
+      run: echo "Build successful - download the Artifact"

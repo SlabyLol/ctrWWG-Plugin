@@ -25,8 +25,8 @@ jobs:
       with:
         name: ctrWWG-Plugin
         path: |
-          ctrWWG.3gx
-          ctrWWG.elf
+          ctrWWG-Plugin.3gx
+          ctrWWG-Plugin.elf
 
     - name: Upload on success
       if: success()

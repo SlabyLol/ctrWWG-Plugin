@@ -73,11 +73,38 @@ jobs:
           TAG="${{ steps.ver.outputs.tag }}"
           if gh release view "$TAG" --repo "${{ github.repository }}" > /dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Release $TAG already exists → only upload assets"
+            echo "Release $TAG already exists - only upload assets"
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-            echo "Release $TAG does not exist → will create"
+            echo "Release $TAG does not exist - will create"
           fi
+
+      - name: Create release notes file
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          cat > /tmp/release-notes.md << EOF
+          ## ctrWWG-Plugin v${VERSION}
+
+          CTRPluginFramework 3GX Plugin for **WarioWare Gold** (3DS)
+
+          ### Features
+          - 99999 Coins
+          - Infinite Lives (Toggle) + Refill Lives
+          - 99 Wario Kard Points
+          - Force Win (Microgame)
+          - Defeat Boss (best-effort)
+          - Unlock All - Info
+          - Full Action Replay + Memory Searcher
+
+          ### Installation
+          1. Download the .3gx file
+          2. Place in: sd:/luma/plugins/00040000001D1C00/
+          3. Enable Plugin Loader in Rosalina
+          4. Press Select in-game
+
+          Version from version.txt: **${VERSION}**
+          EOF
 
       - name: Create release (only if missing)
         if: steps.check.outputs.exists == 'false'
@@ -89,35 +116,14 @@ jobs:
           gh release create "$TAG" \
             --repo "${{ github.repository }}" \
             --title "ctrWWG-Plugin v${VERSION}" \
-            --notes "## ctrWWG-Plugin v${VERSION}
-
-CTRPluginFramework 3GX Plugin for **WarioWare Gold** (3DS)
-
-### Features
-- 99999 Coins
-- Infinite Lives (Toggle) + Refill Lives
-- 99 Wario Kard Points
-- Force Win (Microgame)
-- Defeat Boss (best-effort)
-- Unlock All – Info
-- Full Action Replay + Memory Searcher
-
-### Installation
-1. Download \\`ctrWWG-Plugin.3gx\\` (or matching .3gx)
-2. Place in: \\`sd:/luma/plugins/00040000001D1C00/\\`
-3. Enable Plugin Loader in Rosalina
-4. Press **Select** in-game
-
-Version from \\`version.txt\\`: **${VERSION}**"
+            --notes-file /tmp/release-notes.md
 
       - name: Upload assets to existing or new release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ steps.ver.outputs.tag }}"
-          # Upload / overwrite assets (works for both new and existing releases)
           gh release upload "$TAG" dist/*.3gx dist/*.elf \
             --repo "${{ github.repository }}" \
             --clobber
-
           echo "Assets uploaded to release $TAG"

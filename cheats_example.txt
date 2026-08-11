@@ -1,14 +1,11 @@
-# WarioWare Gold – confirmed working coin address
+# WarioWare Gold – confirmed addresses (user Search)
 # Title ID: 00040000001D1C00
 
 [99999 Coins]
 0091E39C 0001869F
 
-# 0001869F = 99999 decimal
-# Address found via CTRPF Search (matches 2018 community code)
+[9 Lives]
+086ACF38 00000009
 
-[Infinite Lives ON - may need your address]
-2072A0A4 00000000
-
-[99 Kard Points - may need your address]
-00465440 E3A00063
+# Note: 086ACF38 is heap – may change after reboot
+# If Lives stop working, Search again

@@ -66,19 +66,18 @@ exit:
     {
         MenuFolder *cheats = new MenuFolder("Cheats");
 
-        // GameFunc (2nd arg) = runs every frame when activated
         *cheats += new MenuEntry("Coins FREEZE 99999", Coins99999,
-            "Confirmed address 0x0091E39C\n"
-            "Keeps coins at 99999 every frame.");
+            "Address 0x0091E39C (confirmed)");
 
-        *cheats += new MenuEntry("Coins set once 99999", nullptr, CoinsSetOnce,
-            "Writes 99999 once to 0x0091E39C");
+        *cheats += new MenuEntry("Coins set once 99999", nullptr, CoinsSetOnce);
 
-        *cheats += new MenuEntry("Infinite Lives", InfiniteLives,
-            "Writes lives address every frame.\n"
-            "Find real address with Search if needed.");
+        *cheats += new MenuEntry("Infinite Lives FREEZE", InfiniteLives,
+            "Address 0x086ACF38 (confirmed)\n"
+            "Keeps lives at 9 every frame.\n"
+            "Heap addr – may change after reboot.");
 
-        *cheats += new MenuEntry("Refill Lives", nullptr, RefillLives);
+        *cheats += new MenuEntry("Refill Lives (9)", nullptr, RefillLives,
+            "One-shot write to 0x086ACF38");
 
         *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99);
 
@@ -96,8 +95,8 @@ exit:
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 1,
-            "WarioWare Gold\nCoins @ 0x0091E39C confirmed");
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 3,
+            "Coins @ 0091E39C\nLives @ 086ACF38");
 
         menu->SynchronizeWithFrame(true);
         InitMenu(*menu);

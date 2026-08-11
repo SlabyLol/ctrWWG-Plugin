@@ -3,7 +3,6 @@
 namespace CTRPluginFramework
 {
     // Confirmed by user search: Coins @ 0x0091E39C
-    // (matches 2018 community AR code)
 
     void    Coins99999(MenuEntry *entry)
     {
@@ -15,8 +14,6 @@ namespace CTRPluginFramework
 
         if (entry->WasJustActivated())
             OSD::Notify("Coins FREEZE 99999 ON", Color::Lime);
-        if (entry->WasJustDeactivated())
-            OSD::Notify("Coins FREEZE OFF", Color::Orange);
     }
 
     void    CoinsSetOnce(MenuEntry *entry)
@@ -39,8 +36,6 @@ namespace CTRPluginFramework
 
         if (entry->WasJustActivated())
             OSD::Notify("Infinite Lives ON (try Search if no effect)", Color::Lime);
-        if (entry->WasJustDeactivated())
-            OSD::Notify("Infinite Lives OFF", Color::Orange);
     }
 
     void    RefillLives(MenuEntry *entry)
@@ -64,17 +59,13 @@ namespace CTRPluginFramework
     void    ForceWin(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-        {
             OSD::Notify("Use Searcher during microgame", Color::Orange);
-        }
     }
 
     void    DefeatBoss(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
-        {
             OSD::Notify("Use Searcher during boss", Color::Orange);
-        }
     }
 
     void    UnlockInfo(MenuEntry *entry)

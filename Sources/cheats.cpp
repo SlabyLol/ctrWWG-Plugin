@@ -4,7 +4,8 @@ namespace CTRPluginFramework
 {
     // Confirmed by user Search:
     // Coins  @ 0x0091E39C
-    // Lives  @ 0x086ACF38  (heap – may change after reboot)
+    // Lives  @ 0x086ACF38  (heap)
+    // Level  @ 0x086C4F80  (heap)
 
     void    Coins99999(MenuEntry *entry)
     {
@@ -46,6 +47,50 @@ namespace CTRPluginFramework
         }
     }
 
+    // Level editor – set specific level / freeze
+    static u32 g_levelValue = 1;
+
+    void    LevelSet(MenuEntry *entry)
+    {
+        if (entry->WasJustActivated())
+        {
+            // Keyboard to enter level number
+            Keyboard kb("Enter level number (decimal):");
+            kb.IsHexadecimal(false);
+            u32 val = g_levelValue;
+            if (kb.Open(val) != -1)
+            {
+                g_levelValue = val;
+                if (Process::Write32(0x086C4F80, val))
+                    OSD::Notify(Utils::Format("Level set to %u", val), Color::Lime);
+                else
+                    OSD::Notify("Write failed – addr may have moved", Color::Red);
+            }
+        }
+    }
+
+    void    LevelFreeze(MenuEntry *entry)
+    {
+        if (entry->IsActivated())
+            Process::Write32(0x086C4F80, g_levelValue);
+
+        if (entry->WasJustActivated())
+            OSD::Notify(Utils::Format("Level FREEZE %u ON", g_levelValue), Color::Lime);
+    }
+
+    void    LevelPlus1(MenuEntry *entry)
+    {
+        if (entry->WasJustActivated())
+        {
+            u32 cur = 0;
+            Process::Read32(0x086C4F80, cur);
+            cur += 1;
+            Process::Write32(0x086C4F80, cur);
+            g_levelValue = cur;
+            OSD::Notify(Utils::Format("Level -> %u", cur), Color::Lime);
+        }
+    }
+
     void    KardPoints99(MenuEntry *entry)
     {
         if (entry->WasJustActivated())
@@ -70,10 +115,10 @@ namespace CTRPluginFramework
         {
             MessageBox("Addresses", 
                 "Coins: 0x0091E39C (stable)\n"
-                "Lives: 0x086ACF38 (heap)\n\n"
+                "Lives: 0x086ACF38 (heap)\n"
+                "Level: 0x086C4F80 (heap)\n\n"
                 "Heap addresses can change after\n"
-                "reboot. If Lives stops working,\n"
-                "Search again and send new address.")();
+                "reboot. Re-Search if broken.")();
         }
     }
 }

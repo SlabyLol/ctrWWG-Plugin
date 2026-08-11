@@ -68,24 +68,29 @@ exit:
 
         *cheats += new MenuEntry("Coins FREEZE 99999", Coins99999,
             "Address 0x0091E39C (confirmed)");
-
         *cheats += new MenuEntry("Coins set once 99999", nullptr, CoinsSetOnce);
 
         *cheats += new MenuEntry("Infinite Lives FREEZE", InfiniteLives,
-            "Address 0x086ACF38 (confirmed)\n"
-            "Keeps lives at 9 every frame.\n"
-            "Heap addr – may change after reboot.");
-
-        *cheats += new MenuEntry("Refill Lives (9)", nullptr, RefillLives,
-            "One-shot write to 0x086ACF38");
-
-        *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99);
+            "Address 0x086ACF38 – freeze at 9");
+        *cheats += new MenuEntry("Refill Lives (9)", nullptr, RefillLives);
 
         menu += cheats;
+
+        MenuFolder *level = new MenuFolder("Level");
+
+        *level += new MenuEntry("Set Level (keyboard)", nullptr, LevelSet,
+            "Enter level number, writes to 0x086C4F80");
+        *level += new MenuEntry("Level FREEZE", LevelFreeze,
+            "Keeps last set level every frame");
+        *level += new MenuEntry("Level +1", nullptr, LevelPlus1,
+            "Increase current level by 1");
+
+        menu += level;
 
         MenuFolder *gameplay = new MenuFolder("Gameplay");
         *gameplay += new MenuEntry("Force Win (how-to)", nullptr, ForceWin);
         *gameplay += new MenuEntry("Defeat Boss (how-to)", nullptr, DefeatBoss);
+        *gameplay += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99);
         menu += gameplay;
 
         MenuFolder *unlock = new MenuFolder("Unlock");
@@ -95,8 +100,8 @@ exit:
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 3,
-            "Coins @ 0091E39C\nLives @ 086ACF38");
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 2, 4,
+            "Coins / Lives / Level editor");
 
         menu->SynchronizeWithFrame(true);
         InitMenu(*menu);

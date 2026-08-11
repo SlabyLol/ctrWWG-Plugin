@@ -1,6 +1,7 @@
-# Example CTRPF Action Replay codes for WarioWare Gold
-# Place as sd:/luma/plugins/00040000001D1C00.txt
-# or import via the plugin's Action Replay menu
+# ctrWWG-Plugin – Example AR codes for WarioWare Gold
+# Title ID: 00040000001D1C00
+# Place as: sd:/luma/plugins/00040000001D1C00.txt
+# or import via Action Replay inside the plugin
 
 [99999 Coins]
 0091E39C 0001869F
@@ -14,6 +15,17 @@
 [Infinite Lives OFF]
 2072A0A4 00000001
 
-# Note: These addresses come from community codes (2018 era).
-# They may need adjustment for different game revisions.
-# Use the Memory Searcher inside the plugin if they don't work.
+# -------------------------------------------------
+# Unlock All / Defeat Boss
+# The full unlock codes (all minigames, characters,
+# challenges, Arcade collections, Missions, medals,
+# Wario Ward items/cards, all 126 Kard cards) were
+# only released as a binary NTR .plg by dsrules in 2018.
+# They are not publicly available as simple AR codes.
+#
+# For Force Win / Defeat Boss:
+# Use the Memory Searcher while a microgame/boss is
+# running and look for a changing win/lose flag
+# (usually 0 = playing, 1 = win, 2 = lose etc.).
+# Then create your own AR code with the found address.
+# -------------------------------------------------

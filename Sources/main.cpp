@@ -7,7 +7,6 @@
 
 namespace CTRPluginFramework
 {
-    // This patch the NFC disabling the touchscreen when scanning an amiibo, which prevents ctrpf to be used
     static void    ToggleTouchscreenForceOn(void)
     {
         static u32 original = 0;
@@ -54,13 +53,11 @@ exit:
         svcCloseHandle(processHandle);
     }
 
-    // This function is called before main and before the game starts
     void    PatchProcess(FwkSettings &settings)
     {
         ToggleTouchscreenForceOn();
     }
 
-    // This function is called when the process exits
     void    OnProcessExit(void)
     {
         ToggleTouchscreenForceOn();
@@ -68,56 +65,83 @@ exit:
 
     void    InitMenu(PluginMenu &menu)
     {
+        // === Cheats folder ===
         MenuFolder *cheats = new MenuFolder("Cheats");
 
         *cheats += new MenuEntry("99999 Coins", nullptr, Coins99999,
-            "Sets your coin count to 99999.\n"
-            "Address may vary by version/region.");
+            "Sets coin count to 99999.");
 
         *cheats += new MenuEntry("Infinite Lives (Toggle)", nullptr, InfiniteLives,
-            "Toggle infinite lives for Story Mode.\n"
-            "Press again to turn OFF.");
+            "Toggle infinite lives.\nPress again to turn OFF.");
+
+        *cheats += new MenuEntry("Refill Lives", nullptr, RefillLives,
+            "Refill / protect lives (Story Mode).\n"
+            "Best used together with Infinite Lives.");
 
         *cheats += new MenuEntry("99 Wario Kard Points", nullptr, KardPoints99,
             "Sets Wario Kard points to 99.");
 
         menu += cheats;
 
-        // Info entry
-        menu += new MenuEntry("About / Notes", nullptr, [](MenuEntry *entry)
+        // === Gameplay folder ===
+        MenuFolder *gameplay = new MenuFolder("Gameplay");
+
+        *gameplay += new MenuEntry("Force Win (Microgame)", nullptr, ForceWin,
+            "Attempt to force-clear the current\n"
+            "microgame. Use during play.\n"
+            "If nothing happens, search for the\n"
+            "win flag with the Memory Searcher.");
+
+        *gameplay += new MenuEntry("Defeat Boss", nullptr, DefeatBoss,
+            "Best-effort boss clear.\n"
+            "Activate while a Boss Microgame\n"
+            "is running. Combine with Force Win.\n"
+            "Exact address is version-dependent.");
+
+        menu += gameplay;
+
+        // === Unlock folder ===
+        MenuFolder *unlock = new MenuFolder("Unlock");
+
+        *unlock += new MenuEntry("Unlock All – Info", nullptr, UnlockInfo,
+            "Explains how to unlock everything\n"
+            "(minigames, characters, challenges,\n"
+            "Arcade, Missions, cards…).\n"
+            "Full codes were in the old NTR plugin.");
+
+        menu += unlock;
+
+        // About
+        menu += new MenuEntry("About", nullptr, [](MenuEntry *entry)
         {
-            MessageBox("ctrWWG-Plugin", 
+            MessageBox("ctrWWG-Plugin v1.1", 
                 "WarioWare Gold 3GX Plugin\n"
                 "by DarkFox / SlabyLol\n\n"
                 "Title ID: 00040000001D1C00\n\n"
-                "If a cheat does not work, use the\n"
-                "built-in Memory Searcher or\n"
-                "Action Replay to find the correct\n"
-                "addresses for your version.\n\n"
-                "Original NTR codes by dsrules.\n"
-                "Framework by Nanquitas / PabloMK7.")();
+                "Working:\n"
+                "• 99999 Coins\n"
+                "• Infinite / Refill Lives\n"
+                "• 99 Kard Points\n\n"
+                "Force Win / Defeat Boss =\n"
+                "best-effort (use Searcher if needed)\n\n"
+                "Full Unlock All = use old NTR plugin\n"
+                "or Memory Searcher + AR.\n\n"
+                "Credits: Nanquitas, PabloMK7,\n"
+                "dsrules (original NTR cheats)")();
         });
     }
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 0, 0,
+        PluginMenu *menu = new PluginMenu("ctrWWG-Plugin", 1, 1, 0,
             "WarioWare Gold Plugin\n"
-            "Coins | Lives | Kard Points\n"
-            "+ full Action Replay & tools");
+            "Coins • Lives • Kard • Force Win\n"
+            "+ Action Replay & tools");
 
-        // Synchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
-
-        // Init our menu entries & folders
         InitMenu(*menu);
-
-        // Launch menu and mainloop
         menu->Run();
-
         delete menu;
-
-        // Exit plugin
         return (0);
     }
 }

@@ -2,71 +2,54 @@
 
 **CTRPluginFramework 3GX Plugin for WarioWare Gold** (Nintendo 3DS)
 
-A modern Luma3DS plugin based on CTRPluginFramework for *WarioWare Gold*.  
-Title ID: `00040000001D1C00` (EUR / commonly shared)
+Title ID: `00040000001D1C00`
 
 ## Features
 
-- Action Replay support (import codes from file or create your own)
-- Memory Searcher + Hex Editor
-- Built-in cheats menu:
-  - 99999 Coins
-  - Infinite Lives (toggle)
-  - 99 Wario Kard Points
-  - Quick note about unlocking everything (use AR codes or search)
-- Clean English interface
-- Automatic GitHub Actions builds
+### Working Cheats
+- **99999 Coins**
+- **Infinite Lives** (toggle)
+- **Refill Lives**
+- **99 Wario Kard Points**
+
+### Gameplay
+- **Force Win** – attempt to auto-clear the current microgame
+- **Defeat Boss** – best-effort boss clear (activate during boss)
+
+### Unlock
+- Info entry explaining how to get full unlocks (all minigames, characters, challenges, Arcade, Missions, cards…)
+
+The complete “Unlock Everything” codes only existed in the old 2018 NTR `.plg` by dsrules and were never published as simple AR addresses. Use the built-in **Memory Searcher** or the original NTR plugin if you need 100 % unlock.
 
 ## Installation
 
-1. Download the latest `ctrWWG.3gx` from the [Actions](https://github.com/SlabyLol/ctrWWG-Plugin/actions) tab (Artifacts) or Releases.
-2. Place it here on your SD card:
+1. Download `ctrWWG.3gx` from [Actions → Artifacts](https://github.com/SlabyLol/ctrWWG-Plugin/actions)
+2. Put it here:
    ```
    sd:/luma/plugins/00040000001D1C00/ctrWWG.3gx
    ```
-3. Optional: put AR codes in
+3. Optional AR file:
    ```
    sd:/luma/plugins/00040000001D1C00.txt
    ```
-4. Enable the Plugin Loader in Rosalina menu (L + Down + Select).
-5. Start the game → press **Select** to open the menu.
+4. Rosalina → Plugin Loader → Enable
+5. Start game → press **Select**
 
-## Building locally
-
-Requirements:
-- devkitPro + libctrpf (ThePixellizerOSS)
-- 3gxtool
+## Building
 
 ```bash
 make
 ```
 
-Output: `ctrWWG.3gx`
-
-## Known working AR codes (v1.0 / early versions)
-
-```
-[99999 Coins]
-0091E39C 0001869F
-
-[99 Wario Kard Points]
-00465440 E3A00063
-
-[Infinite Lives ON]
-2072A0A4 00000000
-
-[Infinite Lives OFF]
-2072A0A4 00000001
-```
-
-**Note:** Addresses can differ between game versions / regions. Use the built-in Searcher if a code does not work.
+Requires devkitPro + libctrpf + 3gxtool.
 
 ## Credits
 
-- CTRPluginFramework by Nanquitas / PabloMK7 / ThePixellizerOSS
-- Original NTR cheats by dsrules (GBAtemp)
-- Template based on PabloMK7's BlankTemplate
+- CTRPluginFramework – Nanquitas / PabloMK7 / ThePixellizerOSS
+- Original NTR cheats – dsrules (GBAtemp)
+- Template – PabloMK7 BlankTemplate
 
-## License
+## Notes
 
-Feel free to use, modify and share.
+Addresses can differ between game versions/regions.  
+If a cheat does nothing, open the **Memory Searcher** inside the plugin and find the correct value yourself.
